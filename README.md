@@ -39,9 +39,9 @@ Para cada partida, o script insere os dados no banco de dados SQL Server, criand
 O banco de dados utilizado é o SQL Server, e ele deve ter as seguintes tabelas para armazenar os dados:
 
 ### Tabela partidas
-`id`: Identificador único da partida.
-`data`: Data da partida.
-`url`: URL da partida no site HLTV.
+ - `id`: Identificador único da partida.
+ - `data`: Data da partida.
+ - `url`: URL da partida no site HLTV.
 ### Tabela armas
 id: Identificador único da arma.
 nome: Nome da arma.
