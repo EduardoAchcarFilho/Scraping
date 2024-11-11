@@ -1,5 +1,3 @@
-# Vamos criar o conteúdo do README.md com a formatação adequada e salvar em um arquivo .md
-
 readme_content = """
 # Projeto de Web Scraping para Estatísticas de Partidas de Jogos
 
