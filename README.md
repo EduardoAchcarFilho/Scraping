@@ -12,7 +12,7 @@ from selenium.common.exceptions import TimeoutException
 import pandas as pd
 from datetime import datetime
 
-# Configuração do driver
+Configuração do driver
 service = Service(ChromeDriverManager().install())
 options = webdriver.ChromeOptions()
 options.add_argument("--headless")
