@@ -43,13 +43,13 @@ O banco de dados utilizado é o SQL Server, e ele deve ter as seguintes tabelas 
  - `data`: Data da partida.
  - `url`: URL da partida no site HLTV.
 ### Tabela armas
-id: Identificador único da arma.
-nome: Nome da arma.
+ - `id`: Identificador único da arma.
+ - `nome`: Nome da arma.
 ### Tabela kills
-id: Identificador único do registro de kill.
-partida_id: ID da partida relacionada.
-arma_id: ID da arma utilizada.
-kills: Quantidade de kills feitas com a arma.
+ - `id`: Identificador único do registro de kill.
+ - `partida_id`: ID da partida relacionada.
+ - `arma_id`: ID da arma utilizada.
+ - `kills`: Quantidade de kills feitas com a arma.
 
 ### Como Usar
 1. Configuração do Banco de Dados
