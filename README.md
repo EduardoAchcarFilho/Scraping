@@ -23,16 +23,16 @@ Este projeto realiza a raspagem de dados do site HLTV.org para extrair informaç
 ## Estrutura do Projeto
 O código está estruturado para realizar a raspagem de forma automatizada e salvar os resultados no banco de dados. As principais funções incluem:
 
-1. extrair_urls_partidas(data_inicio, data_fim)
+1. **extrair_urls_partidas(data_inicio, data_fim)**
 Acessa a página de partidas e extrai os links das partidas que ocorreram entre as datas data_inicio e data_fim.
 
-2. extrair_urls_heatmaps(url_partida)
+2. **extrair_urls_heatmaps(url_partida)**
 Acessa a página de uma partida e extrai a URL do heatmap associado.
 
-3. contar_kills_por_arma(urls_heatmaps)
+3. **contar_kills_por_arma(urls_heatmaps)**
 Acessa os links dos heatmaps e conta a quantidade de kills por tipo de arma.
 
-4. Inserção de Dados no Banco de Dados
+4. **Inserção de Dados no Banco de Dados**
 Para cada partida, o script insere os dados no banco de dados SQL Server, criando registros para a partida, as armas e as kills.
 
 ### Banco de Dados
