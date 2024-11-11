@@ -6,21 +6,25 @@
 
 
 
+-- Tabela de Partidas (Fato)
 CREATE TABLE partidas (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    data DATETIME NOT NULL,
-    url VARCHAR(255) NOT NULL
+    data DATETIME,
+    url NVARCHAR(500)
 );
 
-
+-- Tabela de Armas (Dimensão)
 CREATE TABLE armas (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    arma VARCHAR(100) NOT NULL
+    nome NVARCHAR(100)
 );
 
-CREATE TABLE kills_por_arma (
+-- Tabela de Kills (Fato)
+CREATE TABLE kills (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    data DATETIME NOT NULL,
-    arma VARCHAR(100) NOT NULL,
-    kills INT NOT NULL
+    partida_id INT,
+    arma_id INT,
+    kills INT,
+    FOREIGN KEY (partida_id) REFERENCES partidas(id),
+    FOREIGN KEY (arma_id) REFERENCES armas(id)
 );
