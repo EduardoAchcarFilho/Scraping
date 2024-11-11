@@ -19,10 +19,6 @@ Este projeto realiza a raspagem de dados do site HLTV.org para extrair informaç
   - `webdriver-manager`: Para gerenciar o driver do Chrome.
   - `re`: Para utilizar expressões regulares e extrair os dados necessários.
 
-### Para instalar as dependências necessárias, use o seguinte comando:
-
-```bash
-pip install selenium beautifulsoup4 pyodbc webdriver-manager
 
 Estrutura do Projeto
 O código está estruturado para realizar a raspagem de forma automatizada e salvar os resultados no banco de dados. As principais funções incluem:
@@ -63,3 +59,11 @@ Defina o intervalo de datas desejado nas variáveis data_inicio e data_fim (form
 Execute o script para iniciar o processo de raspagem e inserção dos dados no banco.
 3. Ajustes
 Caso o site HLTV.org tenha alterações em seu layout, pode ser necessário ajustar o código para encontrar os elementos corretos no HTML.
+
+
+
+### Para instalar as dependências necessárias, use o seguinte comando:
+
+```bash
+pip install selenium beautifulsoup4 pyodbc webdriver-manager
+
