@@ -3,16 +3,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 from collections import defaultdict
+import pyodbc
 import time
 import re
-from selenium.common.exceptions import TimeoutException
-import pandas as pd
 from datetime import datetime
+import urllib
 
-# Configuração do driver
+# Configuração do driver do Chrome
 service = Service(ChromeDriverManager().install())
 options = webdriver.ChromeOptions()
 options.add_argument("--headless")
@@ -20,6 +21,21 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36")
 options.add_argument("--log-level=3")
+
+# Configuração de conexão com o banco de dados
+DADOS_CONEXAO = (
+    "Driver={SQL Server};"
+    "Server=DUXPC;"  # Nome do servidor
+    "Database=scraping;"  # Nome do banco de dados
+    "Trusted_Connection=yes;"  # Usando autenticação do Windows
+)
+
+# Codifica os parâmetros de conexão
+params = urllib.parse.quote_plus(DADOS_CONEXAO)
+
+# Conexão com o SQL Server
+conn = pyodbc.connect(DADOS_CONEXAO)
+cursor = conn.cursor()
 
 # Função para extrair URLs de partidas em um intervalo de datas
 def extrair_urls_partidas(data_inicio, data_fim):
@@ -124,33 +140,46 @@ data_fim = datetime.strptime("31/3/24", "%d/%m/%y")
 # Passo 1: Extrair URLs de partidas dentro do intervalo de datas
 urls_partidas = extrair_urls_partidas(data_inicio, data_fim)
 
-# Lista para armazenar as informações de kills de cada partida
+# Listas para armazenar as informações extraídas
+dados_partidas = []
+dados_armas = []
 dados_kills = []
 
 # Passo 2 e 3: Para cada partida, extrair URLs de heatmaps e contar kills
 for url_partida, data_partida in urls_partidas:
+    # Inserir partida na tabela de partidas
+    dados_partidas.append({'data': data_partida, 'url': url_partida})
+    
     urls_heatmaps = extrair_urls_heatmaps(url_partida)
     armas_kills_partida = contar_kills_por_arma(urls_heatmaps)
 
-    # Armazenar kills por arma para a data específica
+    # Armazenar armas e kills
     for arma, kills in armas_kills_partida.items():
-        dados_kills.append({'arma': arma, 'kills': kills, 'data': data_partida})
+        dados_armas.append({'arma': arma})
+        dados_kills.append({'data': data_partida, 'arma': arma, 'kills': kills})
 
-# Criando um DataFrame com as informações
-df = pd.DataFrame(dados_kills)
+# Inserção dos dados diretamente no banco de dados SQL Server usando pyodbc
+for partida in dados_partidas:
+    cursor.execute("""
+        INSERT INTO partidas (data, url)
+        VALUES (?, ?)
+    """, partida['data'], partida['url'])
 
-# Agrupando o DataFrame por 'data' e 'arma' e somando as kills
-df = df.groupby(['data', 'arma'], as_index=False)['kills'].sum()
+for arma in dados_armas:
+    cursor.execute("""
+        INSERT INTO armas (arma)
+        VALUES (?)
+    """, arma['arma'])
 
-# Filtrando para remover linhas onde a arma é igual a 'ALL'
-df = df[df['arma'] != 'All']
+for kill in dados_kills:
+    cursor.execute("""
+        INSERT INTO kills_por_arma (data, arma, kills)
+        VALUES (?, ?, ?)
+    """, kill['data'], kill['arma'], kill['kills'])
 
-# Exibindo o DataFrame filtrado e consolidado
-print("\nDataFrame de kills por arma e data:")
-print(df)
+# Commitando as alterações
+conn.commit()
 
-# Renomeando as colunas para o padrão desejado
-df = df.rename(columns={"data": "Data", "arma": "Arma", "kills": "kill"})
-
-# Usar ponto e vírgula como separador
-df.to_csv("kills_por_arma_e_data.csv", index=False, encoding="utf-8", sep=";")
+# Fechando a conexão
+cursor.close()
+conn.close()
