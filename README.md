@@ -1,4 +1,3 @@
-readme_content = """
 # Projeto de Web Scraping para Estatísticas de Partidas de Jogos
 
 Este projeto realiza a coleta de dados de partidas de jogos em um site específico, utilizando bibliotecas de web scraping e armazena as informações coletadas em um banco de dados SQL Server.
@@ -21,8 +20,7 @@ O banco de dados é estruturado em três tabelas principais:
 Armazena informações básicas sobre cada partida extraída.
 
 ```sql
-CREATE TABLE partidas (
+CREATE TABLE armas (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    data DATETIME,
-    url NVARCHAR(500)
+    nome NVARCHAR(100)
 );
