@@ -1,8 +1,0 @@
-Criação de Tabelas: As tabelas foram divididas em partidas, armas e kills, com a tabela kills usando chaves estrangeiras para relacionar partidas e armas.
-Inserção de Dados:
-Primeiro, as partidas são inseridas na tabela partidas.
-Em seguida, as armas são verificadas na tabela armas. Se a arma não existir, ela é inserida.
-Depois, as kills são inseridas na tabela kills, associando a partida e a arma.
-
-Normalização: Evita duplicação de dados (por exemplo, você não repetirá os nomes das armas várias vezes para cada partida).
-Escalabilidade: Quando o número de partidas, armas e kills aumenta, a estrutura Snowflake mantém o banco de dados eficiente.
