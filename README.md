@@ -20,7 +20,7 @@ Este projeto realiza a raspagem de dados do site HLTV.org para extrair informaç
   - `re`: Para utilizar expressões regulares e extrair os dados necessários.
 
 
-Estrutura do Projeto
+## Estrutura do Projeto
 O código está estruturado para realizar a raspagem de forma automatizada e salvar os resultados no banco de dados. As principais funções incluem:
 
 1. extrair_urls_partidas(data_inicio, data_fim)
@@ -35,22 +35,23 @@ Acessa os links dos heatmaps e conta a quantidade de kills por tipo de arma.
 4. Inserção de Dados no Banco de Dados
 Para cada partida, o script insere os dados no banco de dados SQL Server, criando registros para a partida, as armas e as kills.
 
-Banco de Dados
+## Banco de Dados
 O banco de dados utilizado é o SQL Server, e ele deve ter as seguintes tabelas para armazenar os dados:
 
-Tabela partidas
+## Tabela partidas
 id: Identificador único da partida.
 data: Data da partida.
 url: URL da partida no site HLTV.
-Tabela armas
+## Tabela armas
 id: Identificador único da arma.
 nome: Nome da arma.
-Tabela kills
+## Tabela kills
 id: Identificador único do registro de kill.
 partida_id: ID da partida relacionada.
 arma_id: ID da arma utilizada.
 kills: Quantidade de kills feitas com a arma.
-Como Usar
+
+## Como Usar
 1. Configuração do Banco de Dados
 Configure a variável DADOS_CONEXAO com as credenciais do seu banco de dados SQL Server.
 
