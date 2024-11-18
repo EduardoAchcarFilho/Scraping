@@ -56,6 +56,10 @@ def extrair_urls_partidas(data_inicio, data_fim):
 
             for partida in grupo_partidas:
                 div_com_data = partida.find("div", {"class": "time", "data-time-format": "d/M/yy"})
+
+                # Obtém o nome do evento
+                evento_td = partida.find("td", class_="event-col")
+                nome_evento = evento_td.get_text(strip=True) if evento_td else "Evento desconhecido"
                 
                 if div_com_data:
                     # Converte a data da partida para datetime
@@ -64,7 +68,8 @@ def extrair_urls_partidas(data_inicio, data_fim):
                     # Verifica se a data da partida está dentro do intervalo
                     if data_inicio <= data_partida <= data_fim:
                         link_relativo = div_com_data.find_parent("a")["href"]
-                        urls_partidas.append((f"https://www.hltv.org{link_relativo}", data_partida))
+                        urls_partidas.append((f"https://www.hltv.org{link_relativo}", data_partida, nome_evento))
+                        print(urls_partidas)
         else:
             print("Tabela de partidas não encontrada.")
             
@@ -146,24 +151,35 @@ dados_armas = []
 dados_kills = []
 
 # Passo 2 e 3: Para cada partida, extrair URLs de heatmaps e contar kills
-for url_partida, data_partida in urls_partidas:
+# Iterar pela lista de partidas
+for  url_partida, data_partida, nome_evento in urls_partidas:
     # Inserir partida na tabela de partidas
-    cursor.execute("INSERT INTO partidas (data, url) VALUES (?, ?)", data_partida, url_partida)
-    
+    cursor.execute(
+        "INSERT INTO partidas (data, url, evento) VALUES (?, ?, ?)",
+        (data_partida, url_partida, nome_evento)
+    )
+    # Processar heatmaps e kills
     urls_heatmaps = extrair_urls_heatmaps(url_partida)
     armas_kills_partida = contar_kills_por_arma(urls_heatmaps)
 
-    # Armazenar armas e kills
+    # Inserir informações de armas e kills
     for arma, kills in armas_kills_partida.items():
-        # Inserir arma na tabela de armas (somente se não existir)
-        cursor.execute("IF NOT EXISTS (SELECT 1 FROM armas WHERE nome = ?) INSERT INTO armas (nome) VALUES (?)", arma, arma)
-        cursor.execute("SELECT id FROM armas WHERE nome = ?", arma)
+        cursor.execute(
+            "IF NOT EXISTS (SELECT 1 FROM armas WHERE nome = ?) "
+            "INSERT INTO armas (nome) VALUES (?)",
+            (arma, arma)
+        )
+        cursor.execute("SELECT id FROM armas WHERE nome = ?", (arma,))
         arma_id = cursor.fetchone()[0]
 
-        # Inserir kills na tabela de kills
-        cursor.execute("INSERT INTO kills (partida_id, arma_id, kills) VALUES ((SELECT id FROM partidas WHERE url = ?), ?, ?)", url_partida, arma_id, kills)
+        cursor.execute(
+            "INSERT INTO kills (partida_id, arma_id, kills) VALUES "
+            "((SELECT id FROM partidas WHERE url = ?), ?, ?)",
+            (url_partida, arma_id, kills)
+        )
 
-    dados_partidas.append((url_partida, data_partida))
+    # Armazenar os dados processados
+    dados_partidas.append((url_partida, data_partida, nome_evento))
     dados_armas.extend(armas_kills_partida.keys())
     dados_kills.extend(armas_kills_partida.values())
 
