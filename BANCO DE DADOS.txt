@@ -1,0 +1,77 @@
+USE [scraping]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[armas] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[nome] [nvarchar](100) NULL
+	PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+
+
+******************************************************************************************
+
+
+
+USE [scraping]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[partidas](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[data] [datetime] NULL,
+	[url] [nvarchar](500) NULL,
+	[evento] [nvarchar](500) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+
+*****************************************************************
+
+
+USE [scraping]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[kills](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[partida_id] [int] NULL,
+	[arma_id] [int] NULL,
+	[kills] [int] NULL
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[kills]  WITH NOCHECK ADD FOREIGN KEY([arma_id])
+REFERENCES [dbo].[armas] ([id])
+GO
+
+ALTER TABLE [dbo].[kills]  WITH CHECK ADD FOREIGN KEY([partida_id])
+REFERENCES [dbo].[partidas] ([id])
+GO

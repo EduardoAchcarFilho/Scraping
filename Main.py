@@ -69,7 +69,6 @@ def extrair_urls_partidas(data_inicio, data_fim):
                     if data_inicio <= data_partida <= data_fim:
                         link_relativo = div_com_data.find_parent("a")["href"]
                         urls_partidas.append((f"https://www.hltv.org{link_relativo}", data_partida, nome_evento))
-                        print(urls_partidas)
         else:
             print("Tabela de partidas não encontrada.")
             
@@ -129,9 +128,13 @@ def contar_kills_por_arma(urls_heatmaps):
                 # Usar regex para extrair o nome da arma e a quantidade de kills
                 match = re.match(r"(.+?) \((\d+)\)", texto_option)
                 if match:
-                    arma = match.group(1)  # Nome da arma
-                    kills = int(match.group(2))  # Quantidade de kills
-                    armas_kills[arma] += kills  # Somar kills ao total para a arma
+                   arma = match.group(1)  # Nome da arma
+                   # Verificar se o nome da arma é exatamente "All", caso seja, ignorar completamente
+                   if arma == "All":  # Ignorar exatamente "All"
+                       pass  # Não faz nada, a arma não é registrada
+                   else:
+                      kills = int(match.group(2))  # Quantidade de kills
+                      armas_kills[arma] += kills  # Somar kills ao total para a arma   
                     
     finally:
         driver.quit()
